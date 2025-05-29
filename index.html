@@ -89,7 +89,7 @@
 </head>
 <body>
   <div class="search-bar">
-    <label style="font-size: 16px; margin-right: 10px; line-height: 40px;">입학년도: </label>
+    <label style="font-size: 16px; margin-right: 10px; line-height: 40px;">입학년도:</label>
     <select style="width: 150px; padding: 10px; font-size: 16px; margin-right: 10px;">
         <!-- 연도 옵션: 2025 ~ 1990 -->
         <!-- 아래는 JavaScript 없이 수동으로 작성한 버전 -->
@@ -139,13 +139,13 @@
       <div class="checklist-box">
         <strong>교양(38학점)</strong>
         <ul>
-          <li><input type="checkbox" vlaue="3"> 대학글쓰기</li>
+          <li><input type="checkbox" value="3"> 대학글쓰기</li>
           <li><input type="checkbox" value="3"> 명저읽기</li>
           <li><input type="checkbox" value="2"> 대학영어1</li>
-          <li><input type="checkbox" value=“2”> 대학영어2</li>
-          <li><input type="checkbox" value=“3”> 대학SW.AI 입문(사회계열)</li>
-          <li><input type="checkbox" value=“1”> 지역사회와 함께하는 서비스러닝</li>
-          <li><input type="checkbox" value=“3”> SW/AI영역</li>
+          <li><input type="checkbox" value="2"> 대학영어2</li>
+          <li><input type="checkbox" value="3"> 대학SW.AI 입문(사회계열)</li>
+          <li><input type="checkbox" value="1"> 지역사회와 함께하는 서비스러닝</li>
+          <li><input type="checkbox" value="3"> SW/AI영역</li>
           <li><input type="checkbox" value="3"> 인문/사회영역</li>
           <li><input type="checkbox" value="3"> 자연/공학영역</li>
           <li><input type="checkbox" value="3"> 예술/융합/SDGs영역</li>
@@ -209,19 +209,87 @@
       <div class="checklist-box">
         <strong>비교과</strong>
         <ul>
-          <li><input type="checkbox">봉사활동 32시간이상</li>
-          <li><input type="checkbox">영어자격증 취득</li>
+          <li><input type="checkbox" id="volunteerCheckbox">봉사활동 32시간이상</li>
+          <li><input type="checkbox" id="englishCheckbox">영어자격증 취득</li>
         </ul>
       </div>
     </div>
     <div class="summary">
-      <div>취득학점: <input type="text" size="4"> / 기준학점: <input type="text" size="4" value="130"></div>
-      <div>자격증: <input type="text" placeholder="N / Y"></div>
-      <div>봉사활동: <input type="text" placeholder="N / Y"></div>
+      <div>취득학점: <input type="text" id="totalCredits" size="4"> / 기준학점: <input type="text" size="4" value="130"></div>
+      <div>자격증: <input type="text" id="englishCert" placeholder="N / Y"></div>
+      <div>봉사활동: <input type="text" id="volunteer" placeholder="N / Y"></div>
     </div>
     <div class="save-button">
-      <button>저장</button>
+      <button id="saveButton">저장</button>
     </div>
   </div>
+  <script>
+    function updateCreditSum() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      let total = 0;
+
+      checkboxes.forEach(cb => {
+        if (cb.checked) {
+          const value = parseFloat(cb.value);
+          if (!isNaN(value)) {
+            total += value;
+          }
+        }
+      });
+
+      document.getElementById('totalCredits').value = total;
+    }
+
+  // 체크박스 변경 시 이벤트 연결
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', updateCreditSum);
+  });
+
+  // 페이지 로딩 시 초기 계산
+  window.addEventListener('DOMContentLoaded', updateCreditSum);
+
+  function updateCreditSum() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    let total = 0;
+
+    checkboxes.forEach(cb => {
+      if (cb.checked) {
+        const value = parseFloat(cb.value);
+        if (!isNaN(value)) {
+          total += value;
+        }
+      }
+    });
+
+    document.getElementById('totalCredits').value = total;
+  }
+
+  // 비교과 항목 처리 함수
+  function updateExtraFields() {
+    const volunteer = document.getElementById('volunteerCheckbox').checked;
+    const english = document.getElementById('englishCheckbox').checked;
+
+    document.getElementById('volunteer').value = volunteer ? "Y" : "N";
+    document.getElementById('englishCert').value = english ? "Y" : "N";
+  }
+
+  // 이벤트 연결
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      updateCreditSum();
+      updateExtraFields();
+    });
+  });
+
+  // 초기 계산
+  window.addEventListener('DOMContentLoaded', () => {
+    updateCreditSum();
+    updateExtraFields();
+  });
+
+  document.getElementById('saveButton').addEventListener('click', () => {
+    alert("졸업 요건 정보가 저장되었습니다.");
+  });
+</script>
 </body>
 </html>
